@@ -2,14 +2,14 @@
 /**
  * HRS_Article_Generator - WordPress専用版（統合版）
  * @package HRS
- * @version 5.0.3-fix
+ * @version 5.0.1-FIXED
  * 
- * CHANGELOG v5.0.3-fix (2026-02-10):
- * - ★ clean_article_html() メソッド追加（<html><head><body>タグ除去）
- * - ★ generate_article_from_prompt() の返り値にクリーニング適用
+ * 修正点:
+ * - ✅ extract_slug_from_url: 公式URLからスラッグを正しく抽出
  */
-
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 if (!class_exists('HRS_Article_Generator')) :
 
@@ -21,10 +21,10 @@ class HRS_Article_Generator {
     private $learning_enabled;
 
     public function __construct() {
-        $this->hqc_threshold     = floatval(get_option('hrs_hqc_threshold', 50)) / 100;
-        $this->hqc_enabled       = (bool) get_option('hrs_hqc_enabled', 1);
+        $this->hqc_threshold   = floatval(get_option('hrs_hqc_threshold', 50)) / 100;
+        $this->hqc_enabled     = (bool) get_option('hrs_hqc_enabled', 1);
         $this->location_required = (bool) get_option('hrs_location_required', false);
-        $this->learning_enabled  = (bool) get_option('hrs_hqc_learning_enabled', true);
+        $this->learning_enabled = (bool) get_option('hrs_hqc_learning_enabled', true);
     }
 
     public static function init() {
@@ -40,14 +40,13 @@ class HRS_Article_Generator {
             wp_die(__('記事を生成する権限がありません。', '5d-review-builder'));
         }
 
-        $hqc_enabled       = $this->hqc_enabled;
+        $hqc_enabled = $this->hqc_enabled;
         $location_required = $this->location_required;
-        $regenerate_id     = isset($_GET['regenerate']) ? intval($_GET['regenerate']) : 0;
-        $weak_points       = isset($_GET['weak_points']) ? json_decode(urldecode($_GET['weak_points']), true) : [];
-
-        $post_title = $regenerate_id ? get_the_title($regenerate_id) : '';
-        $hotel_name = $regenerate_id ? get_post_meta($regenerate_id, '_hrs_hotel_name', true) : '';
-        $location   = $regenerate_id ? get_post_meta($regenerate_id, '_hrs_location', true) : '';
+        $regenerate_id = isset($_GET['regenerate']) ? intval($_GET['regenerate']) : 0;
+        $weak_points = isset($_GET['weak_points']) ? json_decode(urldecode($_GET['weak_points']), true) : [];
+        $post_title  = $regenerate_id ? get_the_title($regenerate_id) : '';
+        $hotel_name  = $regenerate_id ? get_post_meta($regenerate_id, '_hrs_hotel_name', true) : '';
+        $location    = $regenerate_id ? get_post_meta($regenerate_id, '_hrs_location', true) : '';
 
         $presets = [
             'story'  => __('物語形式', '5d-review-builder'),
@@ -74,11 +73,9 @@ class HRS_Article_Generator {
             <div class="hrs-container">
                 <div class="hrs-card">
                     <h2><span class="dashicons dashicons-admin-settings"></span> 設定</h2>
-
                     <form id="article-gen-form">
                         <input type="hidden" name="regenerate_id" value="<?php echo esc_attr($regenerate_id); ?>">
                         <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('hrs_generator_nonce')); ?>">
-
                         <?php if (!empty($weak_points)): ?>
                             <input type="hidden" name="weak_points" value="<?php echo esc_attr(json_encode($weak_points)); ?>">
                         <?php endif; ?>
@@ -120,7 +117,6 @@ class HRS_Article_Generator {
                                     <?php checked(!empty($weak_points)); ?>>
                                 <?php _e('弱点を補強して生成', '5d-review-builder'); ?>
                             </label>
-
                             <?php if (!empty($weak_points)): ?>
                                 <p class="description">
                                     <?php _e('検出された弱点:', '5d-review-builder'); ?>
@@ -144,13 +140,11 @@ class HRS_Article_Generator {
                 <div class="hrs-card" id="preview-card" style="display:none;">
                     <h2><span class="dashicons dashicons-visibility"></span> プレビュー</h2>
                     <div id="preview-content" class="preview-content"></div>
-
                     <div class="preview-actions">
                         <button id="copy-btn" class="button">
                             <span class="dashicons dashicons-clipboard"></span>
                             <?php _e('コピー', '5d-review-builder'); ?>
                         </button>
-
                         <button id="save-btn" class="button button-primary">
                             <span class="dashicons dashicons-yes"></span>
                             <?php _e('投稿として保存', '5d-review-builder'); ?>
@@ -178,10 +172,10 @@ class HRS_Article_Generator {
         <script>
         jQuery(function($){
             const $form = $('#article-gen-form');
-            const $btn  = $('#generate-btn');
+            const $btn = $('#generate-btn');
             const $load = $('#loading');
-            const $pre  = $('#preview-card');
-            const $cnt  = $('#preview-content');
+            const $pre = $('#preview-card');
+            const $cnt = $('#preview-content');
 
             $btn.on('click', function(){
                 $btn.prop('disabled', true);
@@ -214,36 +208,26 @@ class HRS_Article_Generator {
         $instance->render();
     }
 
+    // ========================================
+    // メイン生成ロジック
+    // ========================================
     public function generate($hotel_name, $options = []) {
-        $this->log("========== GENERATE START ==========");
-        $this->log("[DEBUG] hotel_name: " . $hotel_name);
-        $this->log("[DEBUG] options: " . print_r($options, true));
-        
         try {
             $location = $options['location'] ?? '';
             $skip_hqc_check = $options['skip_hqc_check'] ?? false;
-
-            $this->log("[DEBUG] location: " . $location);
-            $this->log("[DEBUG] skip_hqc_check: " . ($skip_hqc_check ? 'true' : 'false'));
-            $this->log("[DEBUG] hqc_enabled: " . ($this->hqc_enabled ? 'true' : 'false'));
 
             if (!$this->hqc_enabled) {
                 $skip_hqc_check = true;
             }
 
             if ($this->location_required && empty($location) && !$skip_hqc_check) {
-                $this->log("[DEBUG] FAILED: location_required");
                 return ['success' => false, 'error_code' => 'location_required'];
             }
 
             $collector = $this->get_data_collector();
-            $this->log("[DEBUG] Data Collector: " . ($collector ? get_class($collector) : 'NULL'));
-            
             $hotel_data = $collector
                 ? $collector->collect_hotel_data($hotel_name, $location)
                 : ($options['mock_hotel_data'] ?? null);
-
-            $this->log("[DEBUG] hotel_data collected: " . ($hotel_data ? 'YES' : 'NO'));
 
             if (isset($options['_hotel_data_override'])) {
                 $hotel_data = $options['_hotel_data_override'];
@@ -251,13 +235,10 @@ class HRS_Article_Generator {
             }
 
             if (!$hotel_data) {
-                $this->log("[DEBUG] FAILED: collection_failed - no hotel_data");
                 return ['success' => false, 'error_code' => 'collection_failed'];
             }
 
             $hqc_score = $hotel_data['hqc_score'] ?? null;
-            $this->log("[DEBUG] hqc_score from data: " . var_export($hqc_score, true));
-
             if ($hqc_score === null) {
                 $skip_hqc_check = true;
                 $hqc_score = 0.8;
@@ -267,23 +248,18 @@ class HRS_Article_Generator {
             }
 
             if (!$skip_hqc_check && $hqc_score < $this->hqc_threshold) {
-                $this->log("[DEBUG] FAILED: low_hqc_score ({$hqc_score} < {$this->hqc_threshold})");
                 return [
-                    'success' => false,
+                    'success'    => false,
                     'error_code' => 'low_hqc_score',
-                    'hqc_score' => $hqc_score,
+                    'hqc_score'  => $hqc_score,
                     'hotel_data' => $hotel_data,
-                    'article' => $options['fallback_article'] ?? ''
+                    'article'    => $options['fallback_article'] ?? ''
                 ];
             }
 
-            // プロンプト生成
             $prompt = '';
             $prompt_engine = $this->get_prompt_engine();
-            $this->log("[DEBUG] Prompt Engine: " . ($prompt_engine ? get_class($prompt_engine) : 'NULL'));
-            
             if ($prompt_engine) {
-                $this->log("[DEBUG] Calling generate_5d_prompt...");
                 $prompt = $prompt_engine->generate_5d_prompt(
                     $hotel_data,
                     $options['style'] ?? 'story',
@@ -292,104 +268,79 @@ class HRS_Article_Generator {
                     $options['policy'] ?? 'standard',
                     $options['ai_model'] ?? 'chatgpt'
                 );
-                $this->log("[DEBUG] Prompt generated, length: " . strlen($prompt));
-                $this->log("[DEBUG] Prompt preview (first 500 chars): " . substr($prompt, 0, 500));
-                
                 $prompt = apply_filters('hrs_before_generate_prompt', $prompt, $hotel_name, $options);
                 $options['optimized_prompt'] = $prompt;
-            } else {
-                $this->log("[DEBUG] WARNING: No prompt engine available!");
             }
 
             $optimization_result = null;
-            
+
             if ($this->learning_enabled && class_exists('HRS_HQC_Prompt_Optimizer')) {
                 $optimizer = HRS_HQC_Prompt_Optimizer::get_instance();
-                
+
                 if (!empty($options['weak_points']) || !empty($options['force_patterns'])) {
                     $force_patterns = $options['force_patterns'] ?? [];
-                    
+
                     if (!empty($options['weak_points'])) {
                         $force_patterns = array_merge(
                             $force_patterns,
                             $this->weak_points_to_patterns($options['weak_points'])
                         );
                     }
-                    
+
                     $optimization_result = $optimizer->optimize($prompt, $hotel_name, [
-                        'boost_level' => $options['boost_level'] ?? 'strong',
+                        'boost_level'   => $options['boost_level'] ?? 'strong',
                         'force_patterns' => array_unique($force_patterns),
                     ]);
-                    
+
                     $this->log("[WEAK_POINT_BOOST] Patterns applied: " . implode(', ', $force_patterns));
-                    
                 } else {
                     $optimization_result = $optimizer->optimize_for_80($prompt, $hotel_name);
                 }
-                
+
                 if (!empty($optimization_result['prompt'])) {
                     $prompt = $optimization_result['prompt'];
                     $options['optimized_prompt'] = $prompt;
                 }
-                
+
                 if (!empty($optimization_result['patterns_applied'])) {
                     $options['_hqc_boost'] = $optimization_result['patterns_applied'];
                 }
                 if (!empty($optimization_result['predicted_improvement'])) {
                     $options['_predicted_improvement'] = $optimization_result['predicted_improvement'];
                 }
-                
+
                 $this->log("[PROMPT_OPTIMIZER] Boost level: " . ($optimization_result['boost_level'] ?? 'none'));
                 $this->log("[PROMPT_OPTIMIZER] Patterns: " . implode(', ', $optimization_result['patterns_applied'] ?? []));
             }
 
-            // AI記事生成
-            $this->log("[DEBUG] ========== AI GENERATION START ==========");
-            $this->log("[DEBUG] Final prompt length: " . strlen($prompt));
-            $this->log("[DEBUG] Prompt empty?: " . (empty($prompt) ? 'YES' : 'NO'));
-            
-            if (!empty($prompt)) {
-                $this->log("[DEBUG] Calling generate_article_from_prompt...");
-                $article_content = $this->generate_article_from_prompt($prompt, $options);
-                $this->log("[DEBUG] Article returned, length: " . strlen($article_content));
-                $this->log("[DEBUG] Article preview (first 300 chars): " . substr($article_content, 0, 300));
-            } else {
-                $this->log("[DEBUG] SKIP: Prompt is empty, using fallback message");
-                $article_content = "<p>プロンプト生成に失敗しました。</p>";
+            $hrs = null;
+            if (class_exists('HRS_Hotel_Review_System') && method_exists('HRS_Hotel_Review_System', 'get_instance')) {
+                $hrs = HRS_Hotel_Review_System::get_instance();
+            } elseif (class_exists('HRS\\Core\\HotelReviewSystem')) {
+                $hrs = \HRS\Core\HotelReviewSystem::get_instance();
             }
-
-            if (empty($article_content)) {
-                $this->log("[DEBUG] WARNING: Article content is empty after generation");
-                $article_content = "<p>AI記事生成に失敗しました。APIキーを確認してください。</p>";
-            }
-
-            $this->log("[DEBUG] ========== AI GENERATION END ==========");
 
             if (!empty($hotel_data['urls'])) {
                 $options['urls'] = $hotel_data['urls'];
             }
 
-            // 投稿挿入
-            $this->log("[DEBUG] Calling insert_post_direct...");
-            $post_id = $this->insert_post_direct($hotel_name, $article_content, $options);
-            $this->log("[DEBUG] insert_post_direct returned: " . var_export($post_id, true));
+            if ($hrs && !isset($options['mock_post_id'])) {
+                $post_id = $hrs->generate_article($hotel_name, $options);
+            } elseif (isset($options['mock_post_id'])) {
+                $post_id = $options['mock_post_id'];
+            } else {
+                $post_id = $this->insert_post_direct($hotel_name, "<p>ダミー記事: {$hotel_name}</p>", $options);
+            }
 
             if (is_wp_error($post_id)) {
                 $this->log("WP_Error: " . $post_id->get_error_message());
                 return ['success' => false, 'error_code' => 'generation_error', 'message' => $post_id->get_error_message()];
             }
 
-            if (!$post_id) {
-                $this->log("[DEBUG] FAILED: post_id is false/0");
-                return ['success' => false, 'error_code' => 'generation_error', 'message' => 'Failed to create post'];
-            }
-
-            $this->log("[DEBUG] Post created successfully, ID: " . $post_id);
-
             $this->ensure_price_section($post_id);
 
             update_post_meta($post_id, '_hrs_hqc_score', $hqc_score);
-            
+
             if (isset($hotel_data['hqc_h_score'])) {
                 update_post_meta($post_id, '_hrs_hqc_h_score', $hotel_data['hqc_h_score']);
             }
@@ -399,30 +350,30 @@ class HRS_Article_Generator {
             if (isset($hotel_data['hqc_c_score'])) {
                 update_post_meta($post_id, '_hrs_hqc_c_score', $hotel_data['hqc_c_score']);
             }
-            
+
             $h_stored = get_post_meta($post_id, '_hrs_hqc_h_score', true);
             $q_stored = get_post_meta($post_id, '_hrs_hqc_q_score', true);
             $c_stored = get_post_meta($post_id, '_hrs_hqc_c_score', true);
 
             if (empty($h_stored) || empty($q_stored) || empty($c_stored)) {
                 $this->log("[HQC_FIX] Individual scores missing, re-analyzing post_id: {$post_id}");
-                
+
                 $post = get_post($post_id);
                 if ($post && !empty($post->post_content) && class_exists('HRS_HQC_Analyzer')) {
                     $analyzer = new HRS_HQC_Analyzer();
                     $analysis = $analyzer->analyze($post->post_content, ['hotel_name' => $hotel_name]);
-                    
+
                     if (!empty($analysis)) {
                         update_post_meta($post_id, '_hrs_hqc_h_score', $analysis['h_score']);
                         update_post_meta($post_id, '_hrs_hqc_q_score', $analysis['q_score']);
                         update_post_meta($post_id, '_hrs_hqc_c_score', $analysis['c_score']);
                         update_post_meta($post_id, '_hrs_hqc_score', $analysis['total_score']);
-                        
+
                         $this->log("[HQC_FIX] Saved H:{$analysis['h_score']} Q:{$analysis['q_score']} C:{$analysis['c_score']} Total:{$analysis['total_score']}");
                     }
                 }
             }
-            
+
             update_post_meta($post_id, '_hrs_hotel_name', $hotel_name);
             update_post_meta($post_id, '_hrs_location', $location);
 
@@ -430,16 +381,16 @@ class HRS_Article_Generator {
                 update_post_meta($post_id, '_hrs_ota_urls', $hotel_data['urls']);
 
                 $ota_key_map = [
-                    'rakuten' => 'hrp_rakuten_travel_url',
-                    'jalan'   => 'hrp_booking_jalan_url',
-                    'ikyu'    => 'hrp_booking_ikyu_url',
-                    'yahoo'   => 'hrp_booking_yahoo_url',
-                    'jtb'     => 'hrp_booking_jtb_url',
-                    'rurubu'  => 'hrp_booking_rurubu_url',
-                    'relux'   => 'hrp_booking_relux_url',
-                    'yukoyuko'=> 'hrp_booking_yukoyuko_url',
-                    'booking' => 'hrp_booking_bookingcom_url',
-                    'expedia' => 'hrp_booking_expedia_url',
+                    'rakuten'    => 'hrp_rakuten_travel_url',
+                    'jalan'      => 'hrp_booking_jalan_url',
+                    'ikyu'       => 'hrp_booking_ikyu_url',
+                    'yahoo'      => 'hrp_booking_yahoo_url',
+                    'jtb'        => 'hrp_booking_jtb_url',
+                    'rurubu'     => 'hrp_booking_rurubu_url',
+                    'relux'      => 'hrp_booking_relux_url',
+                    'yukoyuko'   => 'hrp_booking_yukoyuko_url',
+                    'booking'    => 'hrp_booking_bookingcom_url',
+                    'expedia'    => 'hrp_booking_expedia_url',
                 ];
 
                 foreach ($ota_key_map as $source_key => $meta_key) {
@@ -465,18 +416,12 @@ class HRS_Article_Generator {
                     $location = $hotel_data['prefecture'];
                     update_post_meta($post_id, '_hrs_location', sanitize_text_field($location));
                 }
-            } else {
-                if (!empty($location)) {
-                    update_post_meta($post_id, '_hrs_location', sanitize_text_field($location));
-                }
-                if (!empty($hotel_name)) {
-                    update_post_meta($post_id, '_hrs_hotel_name', sanitize_text_field($hotel_name));
-                }
             }
 
             if (!empty($options['_hqc_boost'])) {
                 update_post_meta($post_id, '_hrs_hqc_boost_patterns', $options['_hqc_boost']);
             }
+
             if (!empty($options['_predicted_improvement'])) {
                 update_post_meta($post_id, '_hrs_predicted_improvement', $options['_predicted_improvement']);
             }
@@ -488,23 +433,19 @@ class HRS_Article_Generator {
             $post = get_post($post_id);
             do_action('hrs_after_generate_article', $post_id, $post->post_content ?? '', $hotel_data, $options);
 
-            $this->log("[DEBUG] ========== GENERATE SUCCESS ==========");
-            $this->log("[DEBUG] Final article length: " . strlen($post->post_content ?? ''));
-
             return [
-                'success' => true,
-                'post_id' => $post_id,
-                'hqc_score' => $hqc_score,
-                'hotel_data' => $hotel_data,
-                'article' => $post->post_content ?? '',
-                'optimization' => $optimization_result,
-                'learning' => [
-                    'style' => $options['style'] ?? 'story',
+                'success'       => true,
+                'post_id'       => $post_id,
+                'hqc_score'     => $hqc_score,
+                'hotel_data'    => $hotel_data,
+                'article'       => $post->post_content ?? '',
+                'optimization'  => $optimization_result,
+                'learning'      => [
+                    'style'   => $options['style'] ?? 'story',
                     'persona' => $options['persona'] ?? 'general',
-                    'tone' => $options['tone'] ?? 'casual',
+                    'tone'    => $options['tone'] ?? 'casual',
                 ]
             ];
-
         } catch (Throwable $e) {
             $this->log('Exception: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
             $this->log('Trace: ' . $e->getTraceAsString());
@@ -512,97 +453,117 @@ class HRS_Article_Generator {
         }
     }
 
-    /**
-     * プロンプトからAI記事を生成
-     */
-    private function generate_article_from_prompt($prompt, $options = []) {
-        $this->log("[API_CALL] ========== generate_article_from_prompt START ==========");
-        
-        $api_key = get_option('hrs_chatgpt_api_key', '');
-        $this->log("[API_CALL] API Key exists: " . (!empty($api_key) ? 'YES (length: ' . strlen($api_key) . ')' : 'NO'));
-        
-        if (empty($api_key)) {
-            $this->log('[API_CALL] FAILED: ChatGPT API key not set');
-            return '';
-        }
+    // ========================================
+    // ajax_generate_article
+    // ========================================
+    public function ajax_generate_article() {
+        $nonce = $_POST['nonce'] ?? '';
 
-        $this->log("[API_CALL] Sending request to OpenAI API...");
-        $this->log("[API_CALL] Prompt length: " . strlen($prompt));
-
-        $request_body = [
-            'model' => 'gpt-4',
-            'messages' => [
-                ['role' => 'user', 'content' => $prompt]
-            ],
-            'temperature' => 0.7,
-            'max_tokens' => 4000,
+        $allowed_nonces = [
+            'hrs_generator_nonce',
+            'hrs_hqc_nonce',
+            'hrs_admin_nonce',
         ];
-        
-        $this->log("[API_CALL] Request model: gpt-4");
-        $this->log("[API_CALL] Request max_tokens: 4000");
 
-        $response = wp_remote_post('https://api.openai.com/v1/chat/completions', [
-            'timeout' => 120,
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $api_key,
-            ],
-            'body' => json_encode($request_body),
-        ]);
-
-        if (is_wp_error($response)) {
-            $this->log('[API_CALL] WP_Error: ' . $response->get_error_message());
-            return '';
+        $nonce_valid = false;
+        foreach ($allowed_nonces as $nonce_name) {
+            if (wp_verify_nonce($nonce, $nonce_name)) {
+                $nonce_valid = true;
+                break;
+            }
         }
 
-        $response_code = wp_remote_retrieve_response_code($response);
-        $this->log("[API_CALL] Response HTTP Code: " . $response_code);
-
-        $body_raw = wp_remote_retrieve_body($response);
-        $this->log("[API_CALL] Response body length: " . strlen($body_raw));
-        
-        $body = json_decode($body_raw, true);
-        
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->log("[API_CALL] JSON decode error: " . json_last_error_msg());
-            $this->log("[API_CALL] Raw response (first 500): " . substr($body_raw, 0, 500));
-            return '';
+        if (!$nonce_valid) {
+            wp_send_json_error([
+                'message' => __('セキュリティトークンが無効です。ページを更新して再度お試しください。', '5d-review-builder')
+            ]);
         }
 
-        // エラーレスポンスのチェック
-        if (isset($body['error'])) {
-            $this->log("[API_CALL] API Error: " . print_r($body['error'], true));
-            return '';
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error([
+                'message' => __('記事を生成する権限がありません。', '5d-review-builder')
+            ]);
         }
 
-        $content = $body['choices'][0]['message']['content'] ?? '';
-        $this->log("[API_CALL] Content extracted, length: " . strlen($content));
+        $hotel_name    = sanitize_text_field($_POST['hotel_name'] ?? '');
+        $location      = sanitize_text_field($_POST['location'] ?? '');
+        $style         = sanitize_key($_POST['style'] ?? 'story');
+        $apply_boost   = !empty($_POST['apply_boost']);
+        $regenerate_id = intval($_POST['regenerate_id'] ?? 0);
 
-        if (empty($content)) {
-            $this->log('[API_CALL] WARNING: Empty content from API');
-            $this->log('[API_CALL] Full response: ' . print_r($body, true));
-            return '';
+        if (empty($hotel_name)) {
+            wp_send_json_error([
+                'message' => __('ホテル名は必須です。', '5d-review-builder')
+            ]);
         }
 
-        $this->log("[API_CALL] Content preview (first 300): " . substr($content, 0, 300));
-        $this->log("[API_CALL] ========== generate_article_from_prompt END ==========");
+        if ($regenerate_id > 0) {
+            $target_post = get_post($regenerate_id);
+            if (!$target_post || $target_post->post_type !== 'hotel-review') {
+                wp_send_json_error([
+                    'message' => __('再生成対象の投稿が見つからないか、正しい投稿タイプではありません。', '5d-review-builder')
+                ]);
+            }
+        }
 
-        // ★★★ 修正: HTMLクリーニング適用 ★★★
-        return $this->clean_article_html($content);
+        $options = [
+            'location' => $location,
+            'style'    => $style,
+        ];
+
+        if ($regenerate_id > 0) {
+            $weak_points_json = wp_unslash($_POST['weak_points'] ?? '[]');
+            $weak_points = json_decode($weak_points_json, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($weak_points) && !empty($weak_points)) {
+                $options['weak_points'] = $weak_points;
+            } elseif (json_last_error() !== JSON_ERROR_NONE && defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[HRS AJAX] Invalid weak_points JSON: ' . substr($weak_points_json, 0, 200));
+            }
+
+            $options['skip_hqc_check'] = true;
+        }
+
+        if ($apply_boost && empty($options['weak_points'] ?? [])) {
+            $options['weak_points'] = [
+                ['axis' => 'H', 'category' => 'emotion'],
+                ['axis' => 'Q', 'category' => 'five_senses'],
+            ];
+        }
+
+        $result = $this->generate($hotel_name, $options);
+
+        if ($result['success']) {
+            wp_send_json_success([
+                'post_id'    => $result['post_id'],
+                'hqc_score'  => $result['hqc_score'],
+                'hotel_name' => $hotel_name,
+                'article'    => $result['article'],
+            ]);
+        } else {
+            wp_send_json_error($result);
+        }
     }
+
+    // ========================================
+    // ヘルパーメソッド
+    // ========================================
 
     private function ensure_price_section($post_id) {
         $post = get_post($post_id);
         if (!$post) return;
-        
+
         $content = $post->post_content;
         $shortcode = '[hrs_price_section]';
-        
+
         if (strpos($content, $shortcode) !== false) return;
-        
+
         $inserted = false;
-        $patterns = array('/<h2[^>]*>.*?まとめ.*?<\/h2>/iu', '/<h2[^>]*>.*?おわりに.*?<\/h2>/iu');
-        
+        $patterns = array(
+            '/<h2[^>]*>.*?まとめ.*?<\/h2>/iu',
+            '/<h2[^>]*>.*?おわりに.*?<\/h2>/iu'
+        );
+
         foreach ($patterns as $pattern) {
             if (preg_match($pattern, $content, $m, PREG_OFFSET_CAPTURE)) {
                 $content = substr($content, 0, $m[0][1]) . "\n\n" . $shortcode . "\n\n" . substr($content, $m[0][1]);
@@ -610,14 +571,16 @@ class HRS_Article_Generator {
                 break;
             }
         }
-        
+
         if (!$inserted && ($pos = strrpos($content, '<h2')) !== false) {
             $content = substr($content, 0, $pos) . "\n\n" . $shortcode . "\n\n" . substr($content, $pos);
             $inserted = true;
         }
-        
-        if (!$inserted) $content .= "\n\n" . $shortcode;
-        
+
+        if (!$inserted) {
+            $content .= "\n\n" . $shortcode;
+        }
+
         wp_update_post(array('ID' => $post_id, 'post_content' => $content));
         $this->log("[PRICE_SECTION] Inserted in post_id: {$post_id}");
     }
@@ -625,39 +588,54 @@ class HRS_Article_Generator {
     private function generate_slug_from_data($hotel_name, $options = []) {
         $urls = $options['urls'] ?? [];
         $official_url = $urls['official'] ?? '';
-        
+
+        // 1. 公式URLからスラッグ抽出を試行
         if (!empty($official_url)) {
             $slug = $this->extract_slug_from_url($official_url);
             if (!empty($slug)) {
+                $this->log("[SLUG] Generated from official URL: {$slug}");
                 return $this->ensure_unique_slug($slug);
             }
         }
-        
+
+        // 2. 楽天URLからスラッグ抽出を試行
         $rakuten_url = $urls['rakuten'] ?? '';
         if (!empty($rakuten_url) && preg_match('/\/([a-z0-9_-]+)\/?(?:\?|$)/i', parse_url($rakuten_url, PHP_URL_PATH), $m)) {
             $slug = sanitize_title($m[1]);
             if (!empty($slug) && strlen($slug) > 3) {
+                $this->log("[SLUG] Generated from Rakuten URL: {$slug}");
                 return $this->ensure_unique_slug($slug);
             }
         }
-        
+
+        // 3. ホテル名からローマ字変換（フォールバック）
         $slug = $this->hotel_name_to_slug($hotel_name);
+        $this->log("[SLUG] Generated from hotel name: {$slug}");
         return $this->ensure_unique_slug($slug);
     }
 
+    /**
+     * ✅ 修正版: 公式URLからスラッグを正しく抽出
+     * 例: https://www.hotel-newgrand.co.jp/ → hotel-newgrand
+     */
     private function extract_slug_from_url($url) {
         $host = parse_url($url, PHP_URL_HOST);
         if (empty($host)) return '';
-        
+
+        // www. を除去
         $host = preg_replace('/^www\./', '', $host);
-        $parts = explode('.', $host);
         
-        if (count($parts) >= 2) {
-            $slug = sanitize_title($parts[0]);
-            if (!empty($slug) && strlen($slug) > 2) {
-                return $slug;
-            }
+        // 日本のドメイン（co.jp, or.jp, ne.jp等）と一般TLDを除去
+        $host = preg_replace('/\.(co\.jp|or\.jp|ne\.jp|ac\.jp|go\.jp|ed\.jp|gr\.jp|ad\.jp|lg\.jp|com|net|org|jp|info|biz|io|travel)$/i', '', $host);
+        
+        // スラッグとしてサニタイズ
+        $slug = sanitize_title($host);
+        
+        // 有効なスラッグかチェック（2文字以上）
+        if (!empty($slug) && strlen($slug) > 2) {
+            return $slug;
         }
+        
         return '';
     }
 
@@ -681,12 +659,12 @@ class HRS_Article_Generator {
             'ゃ'=>'ya','ゅ'=>'yu','ょ'=>'yo','っ'=>'',
             'ー'=>'-','　'=>'-',' '=>'-',
         );
-        
+
         $name = mb_convert_kana($hotel_name, 'c');
         $slug = strtr($name, $map);
         $slug = preg_replace('/[^a-z0-9-]/', '', strtolower($slug));
         $slug = preg_replace('/-+/', '-', trim($slug, '-'));
-        
+
         return !empty($slug) ? $slug : 'hotel-' . time();
     }
 
@@ -694,7 +672,7 @@ class HRS_Article_Generator {
         global $wpdb;
         $original = $slug;
         $counter = 1;
-        
+
         while ($wpdb->get_var($wpdb->prepare(
             "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = 'hotel-review' LIMIT 1",
             $slug
@@ -702,7 +680,7 @@ class HRS_Article_Generator {
             $counter++;
             $slug = $original . '-' . $counter;
         }
-        
+
         return $slug;
     }
 
@@ -714,32 +692,32 @@ class HRS_Article_Generator {
         if (empty($prefecture) && !empty($hotel_data['address'])) {
             $prefecture = $this->extract_prefecture_from_location($hotel_data['address']);
         }
-        
+
         if (empty($prefecture)) {
             $this->log("[AUTO_CATEGORY] No prefecture found for post_id: {$post_id}");
             return;
         }
-        
-        $prefecture_to_area = array(
+
+        $prefecture_to_area = [
             '北海道' => 'hokkaido',
-            '青森県' => 'tohoku', '岩手県' => 'tohoku', '宮城県' => 'tohoku', 
+            '青森県' => 'tohoku', '岩手県' => 'tohoku', '宮城県' => 'tohoku',
             '秋田県' => 'tohoku', '山形県' => 'tohoku', '福島県' => 'tohoku',
-            '茨城県' => 'kanto', '栃木県' => 'kanto', '群馬県' => 'kanto', 
+            '茨城県' => 'kanto', '栃木県' => 'kanto', '群馬県' => 'kanto',
             '埼玉県' => 'kanto', '千葉県' => 'kanto', '東京都' => 'kanto', '神奈川県' => 'kanto',
-            '新潟県' => 'chubu', '富山県' => 'chubu', '石川県' => 'chubu', 
-            '福井県' => 'chubu', '山梨県' => 'chubu', '長野県' => 'chubu', 
+            '新潟県' => 'chubu', '富山県' => 'chubu', '石川県' => 'chubu',
+            '福井県' => 'chubu', '山梨県' => 'chubu', '長野県' => 'chubu',
             '岐阜県' => 'chubu', '静岡県' => 'chubu', '愛知県' => 'chubu',
-            '三重県' => 'kinki', '滋賀県' => 'kinki', '京都府' => 'kinki', 
+            '三重県' => 'kinki', '滋賀県' => 'kinki', '京都府' => 'kinki',
             '大阪府' => 'kinki', '兵庫県' => 'kinki', '奈良県' => 'kinki', '和歌山県' => 'kinki',
-            '鳥取県' => 'chugoku', '島根県' => 'chugoku', '岡山県' => 'chugoku', 
+            '鳥取県' => 'chugoku', '島根県' => 'chugoku', '岡山県' => 'chugoku',
             '広島県' => 'chugoku', '山口県' => 'chugoku',
             '徳島県' => 'shikoku', '香川県' => 'shikoku', '愛媛県' => 'shikoku', '高知県' => 'shikoku',
-            '福岡県' => 'kyushu', '佐賀県' => 'kyushu', '長崎県' => 'kyushu', 
-            '熊本県' => 'kyushu', '大分県' => 'kyushu', '宮崎県' => 'kyushu', 
+            '福岡県' => 'kyushu', '佐賀県' => 'kyushu', '長崎県' => 'kyushu',
+            '熊本県' => 'kyushu', '大分県' => 'kyushu', '宮崎県' => 'kyushu',
             '鹿児島県' => 'kyushu', '沖縄県' => 'kyushu',
-        );
-        
-        $prefecture_slugs = array(
+        ];
+
+        $prefecture_slugs = [
             '北海道' => 'hokkaido',
             '青森県' => 'aomori', '岩手県' => 'iwate', '宮城県' => 'miyagi',
             '秋田県' => 'akita', '山形県' => 'yamagata', '福島県' => 'fukushima',
@@ -756,73 +734,78 @@ class HRS_Article_Generator {
             '福岡県' => 'fukuoka', '佐賀県' => 'saga', '長崎県' => 'nagasaki',
             '熊本県' => 'kumamoto', '大分県' => 'oita', '宮崎県' => 'miyazaki',
             '鹿児島県' => 'kagoshima', '沖縄県' => 'okinawa',
-        );
-        
+        ];
+
         $area_slug = $prefecture_to_area[$prefecture] ?? '';
         $pref_slug = $prefecture_slugs[$prefecture] ?? '';
-        
+
         if (empty($area_slug) || empty($pref_slug)) {
             $this->log("[AUTO_CATEGORY] Unknown prefecture: {$prefecture}");
             return;
         }
-        
+
         $taxonomy = 'category';
-        $term_ids = array();
-        
+        $term_ids = [];
+
         $area_term = get_term_by('slug', $area_slug, $taxonomy);
         if ($area_term && !is_wp_error($area_term)) {
             $term_ids[] = $area_term->term_id;
         }
-        
+
         $pref_term = get_term_by('slug', $pref_slug, $taxonomy);
         if ($pref_term && !is_wp_error($pref_term)) {
             $term_ids[] = $pref_term->term_id;
         }
-        
+
         if (!empty($term_ids)) {
             wp_set_object_terms($post_id, $term_ids, $taxonomy, false);
             $this->log("[AUTO_CATEGORY] Set categories for post_id {$post_id}: " . implode(', ', $term_ids));
         }
     }
-    
+
     private function set_persona_category($post_id, $persona) {
         if (empty($persona)) {
             $persona = 'general';
         }
-        
-        $persona_slugs = array(
-            'general' => 'general', 'solo' => 'solo', 'couple' => 'couple',
-            'family' => 'family', 'senior' => 'senior', 'workation' => 'workation',
-            'luxury' => 'luxury', 'budget' => 'budget',
-        );
-        
-        $persona_name_to_slug = array(
-            '一般・観光' => 'general',
+
+        $persona_slugs = [
+            'general'    => 'general',
+            'solo'       => 'solo',
+            'couple'     => 'couple',
+            'family'     => 'family',
+            'senior'     => 'senior',
+            'workation'  => 'workation',
+            'luxury'     => 'luxury',
+            'budget'     => 'budget',
+        ];
+
+        $persona_name_to_slug = [
+            '一般・観光'   => 'general',
             'カップル・夫婦' => 'couple',
-            '一人旅' => 'solo',
-            'ファミリー' => 'family',
-            'シニア' => 'senior',
+            '一人旅'       => 'solo',
+            'ファミリー'   => 'family',
+            'シニア'       => 'senior',
             'ワーケーション' => 'workation',
             'ラグジュアリー' => 'luxury',
-            'コスパ重視' => 'budget',
-        );
-        
+            'コスパ重視'   => 'budget',
+        ];
+
         $slug = $persona_slugs[$persona] ?? $persona_name_to_slug[$persona] ?? 'general';
         $taxonomy = 'hotel-category';
-        
+
         if (!taxonomy_exists($taxonomy)) return;
-        
+
         $term = get_term_by('slug', $slug, $taxonomy);
         if ($term && !is_wp_error($term)) {
-            wp_set_object_terms($post_id, array($term->term_id), $taxonomy, false);
+            wp_set_object_terms($post_id, [$term->term_id], $taxonomy, false);
             $this->log("[PERSONA_CATEGORY] Set {$slug} for post_id: {$post_id}");
         }
     }
 
     private function extract_prefecture_from_location($location) {
         if (empty($location)) return '';
-        
-        $prefectures = array(
+
+        $prefectures = [
             '北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県',
             '茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県',
             '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県', '岐阜県',
@@ -830,8 +813,8 @@ class HRS_Article_Generator {
             '奈良県', '和歌山県', '鳥取県', '島根県', '岡山県', '広島県', '山口県',
             '徳島県', '香川県', '愛媛県', '高知県', '福岡県', '佐賀県', '長崎県',
             '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'
-        );
-        
+        ];
+
         foreach ($prefectures as $pref) {
             if (mb_strpos($location, $pref) !== false) return $pref;
         }
@@ -840,7 +823,7 @@ class HRS_Article_Generator {
 
     private function auto_fetch_rakuten_price($post_id, $hotel_data, $hotel_name) {
         $rakuten_hotel_no = $hotel_data['rakuten_hotel_no'] ?? null;
-        
+
         if (empty($rakuten_hotel_no) && !empty($hotel_data['urls']['rakuten'])) {
             $rakuten_url = $hotel_data['urls']['rakuten'];
             if (preg_match('/hotel_no=(\d+)/', $rakuten_url, $matches)) {
@@ -851,11 +834,11 @@ class HRS_Article_Generator {
                 $rakuten_hotel_no = $matches[1];
             }
         }
-        
+
         if (empty($rakuten_hotel_no)) return;
-        
+
         update_post_meta($post_id, '_hrs_rakuten_hotel_no', $rakuten_hotel_no);
-        
+
         if (function_exists('hrs_rakuten_price_updater')) {
             $updater = hrs_rakuten_price_updater();
             $updater->update_price_for_post($post_id);
@@ -865,11 +848,28 @@ class HRS_Article_Generator {
     private function weak_points_to_patterns($weak_points) {
         $patterns = [];
         $pattern_map = [
-            'H' => ['timeline' => 'timeline', 'emotion' => 'emotion', 'scene' => 'scene', 'first_person' => 'first_person', 'address' => 'first_person', 'dialogue' => 'emotion'],
-            'Q' => ['five_senses' => 'five_senses', 'cuisine' => 'cuisine', 'facility' => 'facility', 'facilities' => 'facility', 'specificity' => 'five_senses'],
-            'C' => ['headings' => 'timeline', 'keyphrase' => 'facility', 'structure' => 'timeline'],
+            'H' => [
+                'timeline'   => 'timeline',
+                'emotion'    => 'emotion',
+                'scene'      => 'scene',
+                'first_person' => 'first_person',
+                'address'    => 'first_person',
+                'dialogue'   => 'emotion'
+            ],
+            'Q' => [
+                'five_senses' => 'five_senses',
+                'cuisine'     => 'cuisine',
+                'facility'    => 'facility',
+                'facilities'  => 'facility',
+                'specificity' => 'five_senses'
+            ],
+            'C' => [
+                'headings'   => 'timeline',
+                'keyphrase'  => 'facility',
+                'structure'  => 'timeline'
+            ],
         ];
-        
+
         foreach ($weak_points as $wp) {
             $axis = $wp['axis'] ?? '';
             $category = $wp['category'] ?? '';
@@ -877,17 +877,13 @@ class HRS_Article_Generator {
                 $patterns[] = $pattern_map[$axis][$category];
             }
         }
+
         return array_unique($patterns);
     }
 
     public function insert_post_direct($hotel_name, $article, $options = []) {
-        $this->log("[INSERT_POST] Starting insert_post_direct...");
-        $this->log("[INSERT_POST] hotel_name: " . $hotel_name);
-        $this->log("[INSERT_POST] article length: " . strlen($article));
-        
         $slug = $this->generate_slug_from_data($hotel_name, $options);
-        $this->log("[INSERT_POST] generated slug: " . $slug);
-        
+
         $post_data = [
             'post_title'   => $hotel_name,
             'post_content' => $article,
@@ -896,24 +892,26 @@ class HRS_Article_Generator {
             'post_name'    => $slug,
         ];
 
-        $this->log("[INSERT_POST] Calling wp_insert_post...");
         $post_id = wp_insert_post($post_data, true);
-        $this->log("[INSERT_POST] wp_insert_post returned: " . (is_wp_error($post_id) ? 'WP_Error: ' . $post_id->get_error_message() : $post_id));
 
         if (!is_wp_error($post_id) && $post_id > 0) {
             $hqc_score = $options['hqc_score'] ?? 0.8;
             update_post_meta($post_id, '_hrs_hqc_score', $hqc_score);
             update_post_meta($post_id, '_hrs_hotel_name', $hotel_name);
             update_post_meta($post_id, '_hrs_location', $options['location'] ?? '');
-            $this->log("[INSERT_POST] Meta saved successfully");
         }
 
         return is_wp_error($post_id) ? false : $post_id;
     }
 
     public function record_section_regeneration_success(array $data) {
-        if (empty($data['hotel_name']) || empty($data['section_type'])) return false;
-        if (!isset($data['before_score'], $data['after_score']) || $data['after_score'] <= $data['before_score']) return false;
+        if (empty($data['hotel_name']) || empty($data['section_type'])) {
+            return false;
+        }
+
+        if (!isset($data['before_score'], $data['after_score']) || $data['after_score'] <= $data['before_score']) {
+            return false;
+        }
 
         $handled = apply_filters('hrs_handle_section_learning', false, $data);
         if ($handled !== false) return true;
@@ -921,184 +919,62 @@ class HRS_Article_Generator {
         if (class_exists('HRS_HQC_Learning_Module')) {
             $learning = HRS_HQC_Learning_Module::get_instance();
             $learning_data = [
-                'hotel_name' => $data['hotel_name'],
+                'hotel_name'   => $data['hotel_name'],
                 'section_type' => $data['section_type'],
                 'before_score' => round($data['before_score'], 3),
-                'after_score' => round($data['after_score'], 3),
-                'improvement' => round($data['after_score'] - $data['before_score'], 3),
-                'confidence' => floatval($data['confidence'] ?? 0),
-                'content' => $data['content'] ?? '',
-                'learned_at' => current_time('mysql'),
+                'after_score'  => round($data['after_score'], 3),
+                'improvement'  => round($data['after_score'] - $data['before_score'], 3),
+                'confidence'   => floatval($data['confidence'] ?? 0),
+                'content'      => $data['content'] ?? '',
+                'learned_at'   => current_time('mysql'),
             ];
+
             if (method_exists($learning, 'record_section_learning')) {
                 $learning->record_section_learning($learning_data);
             } else {
                 do_action('hrs_section_learning_record', $learning_data);
             }
         }
+
         return true;
     }
 
     private function get_data_collector() {
-        $this->log("[GET_DATA_COLLECTOR] Checking available classes...");
-        if (class_exists('HRS_Data_Collector')) {
-            $this->log("[GET_DATA_COLLECTOR] Found: HRS_Data_Collector");
-            return new HRS_Data_Collector();
-        }
-        if (class_exists('HRS\\Core\\DataCollector')) {
-            $this->log("[GET_DATA_COLLECTOR] Found: HRS\\Core\\DataCollector");
-            return new \HRS\Core\DataCollector();
-        }
-        $this->log("[GET_DATA_COLLECTOR] WARNING: No data collector class found!");
+        if (class_exists('HRS_Data_Collector')) return new HRS_Data_Collector();
+        if (class_exists('HRS\\Core\\DataCollector')) return new \HRS\Core\DataCollector();
         return null;
     }
 
     private function get_prompt_engine() {
-        $this->log("[GET_PROMPT_ENGINE] Checking available classes...");
-        if (class_exists('HRS_Prompt_Engine')) {
-            $this->log("[GET_PROMPT_ENGINE] Found: HRS_Prompt_Engine");
-            return new HRS_Prompt_Engine();
-        }
-        if (class_exists('HRS\\Core\\PromptEngine')) {
-            $this->log("[GET_PROMPT_ENGINE] Found: HRS\\Core\\PromptEngine");
-            return new \HRS\Core\PromptEngine();
-        }
-        $this->log("[GET_PROMPT_ENGINE] WARNING: No prompt engine class found!");
+        if (class_exists('HRS_Prompt_Engine')) return new HRS_Prompt_Engine();
+        if (class_exists('HRS\\Core\\PromptEngine')) return new \HRS\Core\PromptEngine();
         return null;
     }
 
-    /**
-     * ★★★ ChatGPT応答のHTMLをクリーニング ★★★
-     * - <html>, <head>, <title>, <body> タグを除去
-     * - Markdownの```htmlフェンスを除去
-     * - 正常なWordPress用HTMLのみを返す
-     *
-     * @param string $content AI生成コンテンツ
-     * @return string クリーニング済みコンテンツ
-     */
-    private function clean_article_html($content) {
-        if (empty($content)) return $content;
-
-        $original_length = strlen($content);
-
-        // Markdown code fence除去 (```html ... ```)
-        $content = preg_replace('/^```(?:html)?\s*\n?/i', '', $content);
-        $content = preg_replace('/\n?```\s*$/', '', $content);
-
-        // DOCTYPE除去
-        $content = preg_replace('/<!DOCTYPE[^>]*>/i', '', $content);
-
-        // <html>...</html> のラッパーを除去
-        $content = preg_replace('/<html[^>]*>/i', '', $content);
-        $content = preg_replace('/<\/html>/i', '', $content);
-
-        // <head>...</head> を丸ごと除去（中のCSS, title, metaも全て）
-        $content = preg_replace('/<head[^>]*>.*?<\/head>/is', '', $content);
-
-        // <body> タグを除去（中身は残す）
-        $content = preg_replace('/<body[^>]*>/i', '', $content);
-        $content = preg_replace('/<\/body>/i', '', $content);
-
-        // 念のため残りの <title>, <meta>, <style> も除去
-        $content = preg_replace('/<title[^>]*>.*?<\/title>/is', '', $content);
-        $content = preg_replace('/<meta[^>]*\/?>/i', '', $content);
-        $content = preg_replace('/<style[^>]*>.*?<\/style>/is', '', $content);
-
-        // 先頭末尾の空白・改行を整理
-        $content = trim($content);
-
-        // 連続する空行を最大2つに
-        $content = preg_replace('/\n{3,}/', "\n\n", $content);
-
-        $cleaned_length = strlen($content);
-        if ($original_length !== $cleaned_length) {
-            $this->log("[CLEAN_HTML] Cleaned: {$original_length} -> {$cleaned_length} bytes");
-        }
-
-        return $content;
-    }
-
     private function log($msg) {
-        error_log('[HRS_Article_Generator] ' . $msg);
-    }
-
-    public function ajax_generate_article() {
-        $this->log("[AJAX] ========== ajax_generate_article START ==========");
-        
-        check_ajax_referer('hrs_generator_nonce', 'nonce');
-        if (!current_user_can('edit_posts')) {
-            $this->log("[AJAX] FAILED: Permission denied");
-            wp_send_json_error(['message' => __('権限がありません。', '5d-review-builder')]);
-        }
-
-        $hotel_name = sanitize_text_field($_POST['hotel_name'] ?? '');
-        $location = sanitize_text_field($_POST['location'] ?? '');
-        $style = sanitize_key($_POST['style'] ?? 'story');
-        $apply_boost = !empty($_POST['apply_boost']);
-        $regenerate_id = intval($_POST['regenerate_id'] ?? 0);
-
-        $this->log("[AJAX] hotel_name: " . $hotel_name);
-        $this->log("[AJAX] location: " . $location);
-        $this->log("[AJAX] style: " . $style);
-        $this->log("[AJAX] apply_boost: " . ($apply_boost ? 'true' : 'false'));
-        $this->log("[AJAX] regenerate_id: " . $regenerate_id);
-
-        if (empty($hotel_name)) {
-            $this->log("[AJAX] FAILED: Empty hotel_name");
-            wp_send_json_error(['message' => __('ホテル名は必須です。', '5d-review-builder')]);
-        }
-
-        $options = ['location' => $location, 'style' => $style];
-
-        if ($regenerate_id > 0) {
-            $weak_points = json_decode(wp_unslash($_POST['weak_points'] ?? '[]'), true);
-            if (!empty($weak_points)) $options['weak_points'] = $weak_points;
-            $options['skip_hqc_check'] = true;
-        }
-
-        if ($apply_boost && empty($options['weak_points'])) {
-            $options['weak_points'] = [
-                ['axis' => 'H', 'category' => 'emotion'],
-                ['axis' => 'Q', 'category' => 'five_senses'],
-            ];
-        }
-
-        $this->log("[AJAX] Calling generate() method...");
-        $result = $this->generate($hotel_name, $options);
-        $this->log("[AJAX] generate() returned: " . ($result['success'] ? 'SUCCESS' : 'FAILED'));
-        $this->log("[AJAX] Result: " . print_r($result, true));
-
-        if ($result['success']) {
-            $this->log("[AJAX] Sending success response");
-            wp_send_json_success([
-                'post_id' => $result['post_id'],
-                'hqc_score' => $result['hqc_score'],
-                'hotel_name' => $hotel_name,
-                'article' => $result['article'],
-            ]);
-        } else {
-            $this->log("[AJAX] Sending error response");
-            wp_send_json_error($result);
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[HRS_Article_Generator] ' . $msg);
         }
     }
 
     public function ajax_save_as_post() {
         check_ajax_referer('hrs_generator_nonce', 'nonce');
+
         if (!current_user_can('publish_posts')) {
             wp_send_json_error(['message' => __('投稿権限がありません。', '5d-review-builder')]);
         }
 
         $post_id = intval($_POST['post_id'] ?? 0);
-        $status = sanitize_key($_POST['status'] ?? 'draft');
+        $status  = sanitize_key($_POST['status'] ?? 'draft');
 
         if (!$post_id || !get_post($post_id)) {
             wp_send_json_error(['message' => __('投稿が見つかりません。', '5d-review-builder')]);
         }
 
         $updated = wp_update_post([
-            'ID' => $post_id,
-            'post_status' => $status,
-            'post_date' => current_time('mysql'),
+            'ID'            => $post_id,
+            'post_status'   => $status,
+            'post_date'     => current_time('mysql'),
             'post_date_gmt' => get_gmt_from_date(current_time('mysql')),
         ], true);
 
@@ -1107,9 +983,9 @@ class HRS_Article_Generator {
         }
 
         wp_send_json_success([
-            'post_id' => $post_id,
-            'edit_url' => get_edit_post_link($post_id, 'raw'),
-            'view_url' => get_permalink($post_id),
+            'post_id'   => $post_id,
+            'edit_url'  => get_edit_post_link($post_id, 'raw'),
+            'view_url'  => get_permalink($post_id),
         ]);
     }
 }

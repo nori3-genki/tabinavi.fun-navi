@@ -1,0 +1,391 @@
+.hrs-manual-wrap {
+  margin: 20px 20px 20px 0;
+}
+
+/* =========================
+   ヘッダー
+========================= */
+.hrs-page-header {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.hrs-page-header h1 {
+  color: #ffffff;
+  font-size: 32px;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* =========================
+   ガイドカード
+========================= */
+.hrs-guide-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 24px;
+}
+
+.hrs-guide-card h3 {
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #1d2327;
+}
+
+.guide-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.guide-step {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+}
+
+.guide-step .step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.guide-step .step-content strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #1d2327;
+  font-size: 14px;
+}
+
+.guide-step .step-content p {
+  margin: 0;
+  font-size: 12px;
+  color: #50575e;
+}
+
+.guide-arrow {
+  font-size: 24px;
+  color: #dddddd;
+  flex-shrink: 0;
+}
+
+/* =========================
+   メインコンテナ
+========================= */
+.hrs-manual-container {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 24px;
+}
+
+/* =========================
+   設定パネル
+========================= */
+.hrs-settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #1d2327;
+}
+
+.form-group label.required::after {
+  content: '*';
+  color: #d63638;
+  margin-left: 4px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f9f9f9;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: normal;
+}
+
+.checkbox-label:hover {
+  background: #f0f6fc;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+}
+
+/* =========================
+   プロンプトパネル
+========================= */
+.hrs-prompt-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =========================
+   AIタブ
+========================= */
+.hrs-ai-tabs {
+  display: flex;
+  gap: 12px;
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.ai-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  background: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ai-tab:hover {
+  background: #f0f6fc;
+  border-color: #2271b1;
+}
+
+.ai-tab.active {
+  background: linear-gradient(135deg, #f0f6fc 0%, #e6f2ff 100%);
+  border-color: #2271b1;
+  box-shadow: 0 2px 8px rgba(34,113,177,0.2);
+}
+
+.ai-logo {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.ai-name {
+  font-weight: 600;
+  color: #1d2327;
+  font-size: 15px;
+}
+
+.ai-badge {
+  font-size: 11px;
+  color: #50575e;
+  background: rgba(0,0,0,0.05);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* =========================
+   プロンプトカード
+========================= */
+.hrs-prompt-card {
+  min-height: 400px;
+}
+
+.hrs-prompt-card .hrs-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prompt-info-bar {
+  display: flex;
+  gap: 24px;
+  padding: 12px 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #50575e;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-indicator {
+  margin-left: auto;
+  background: #e6f2ff;
+  padding: 4px 12px;
+  border-radius: 4px;
+  color: #2271b1;
+  font-weight: 500;
+}
+
+.prompt-content {
+  background: #1e1e1e;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.prompt-content pre {
+  margin: 0;
+  font-family: Monaco, Menlo, "Ubuntu Mono", monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #d4d4d4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.prompt-actions {
+  text-align: center;
+}
+
+/* =========================
+   AIリンクカード
+========================= */
+.hrs-ai-links-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.hrs-ai-links-card h3 {
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #1d2327;
+}
+
+.ai-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.ai-link-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.ai-link-card:hover {
+  background: #f0f6fc;
+  border-color: #2271b1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.ai-link-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.ai-link-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ai-link-info strong {
+  color: #1d2327;
+  font-size: 15px;
+}
+
+.ai-link-info span {
+  font-size: 12px;
+  color: #50575e;
+}
+
+/* =========================
+   アニメーション
+========================= */
+@keyframes copy-success {
+  0% { background: #00a32a; transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { background: #00a32a; transform: scale(1); }
+}
+
+.copy-success {
+  animation: copy-success 0.3s ease;
+}
+
+/* =========================
+   レスポンシブ
+========================= */
+@media (max-width: 1280px) {
+  .hrs-manual-container {
+    grid-template-columns: 350px 1fr;
+  }
+}
+
+@media (max-width: 960px) {
+  .hrs-manual-container {
+    grid-template-columns: 1fr;
+  }
+  .guide-steps {
+    flex-direction: column;
+  }
+  .guide-arrow {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 600px) {
+  .hrs-ai-tabs {
+    flex-direction: column;
+  }
+}

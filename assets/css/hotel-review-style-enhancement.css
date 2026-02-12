@@ -1,0 +1,499 @@
+/* ==========================================================================
+   ホテルレビュー個別記事ページ - 色彩強化スタイル
+   トップページの雰囲気に合わせた華美でない配色
+   ========================================================================== */
+
+/* --------------------------------
+   見出し・セクション装飾
+   -------------------------------- */
+
+/* H2見出し - トップページの緑系に合わせた装飾 */
+.entry-content h2 {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e9 100%);
+    border-left: 5px solid #4a7c59;
+    padding: 16px 20px;
+    margin: 40px 0 24px;
+    border-radius: 4px;
+    color: #2c3e50;
+    font-weight: 700;
+    box-shadow: 0 2px 4px rgba(74, 124, 89, 0.1);
+}
+
+/* H3見出し - より軽い装飾 */
+.entry-content h3 {
+    border-left: 4px solid #81c784;
+    padding: 12px 16px;
+    margin: 32px 0 20px;
+    color: #2c3e50;
+    font-weight: 600;
+    background: linear-gradient(90deg, #f1f8f4 0%, transparent 100%);
+}
+
+/* H4見出し - アクセントカラー */
+.entry-content h4 {
+    color: #4a7c59;
+    padding: 8px 0;
+    margin: 24px 0 16px;
+    border-bottom: 2px dotted #c8e6c9;
+    font-weight: 600;
+}
+
+/* --------------------------------
+   記事冒頭の導入文エリア
+   -------------------------------- */
+
+/* 最初の段落を強調(リード文として) */
+.entry-content > p:first-of-type {
+    background: linear-gradient(135deg, #fff8e1 0%, #fffef7 100%);
+    border-left: 4px solid #ffa726;
+    padding: 20px 24px;
+    margin: 24px 0;
+    border-radius: 4px;
+    font-size: 1.05em;
+    line-height: 1.8;
+    color: #37474f;
+    box-shadow: 0 2px 6px rgba(255, 167, 38, 0.08);
+}
+
+/* --------------------------------
+   カテゴリー・タグ表示
+   -------------------------------- */
+
+/* カテゴリータグ - トップページのオレンジタグに合わせる */
+.post-categories {
+    margin: 16px 0;
+}
+
+.post-categories a,
+.tagcloud a,
+.entry-meta .cat-links a {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff9800 0%, #fb8c00 100%);
+    color: #fff;
+    padding: 6px 16px;
+    margin: 4px 8px 4px 0;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(255, 152, 0, 0.2);
+}
+
+.post-categories a:hover,
+.tagcloud a:hover,
+.entry-meta .cat-links a:hover {
+    background: linear-gradient(135deg, #fb8c00 0%, #f57c00 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+}
+
+/* タグクラウド */
+.tagcloud a {
+    background: linear-gradient(135deg, #4a7c59 0%, #388e3c 100%);
+    font-size: 0.85em !important;
+}
+
+.tagcloud a:hover {
+    background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+}
+
+/* --------------------------------
+   情報ボックス・アラート
+   -------------------------------- */
+
+/* ポイント・ヒントボックス */
+.entry-content .info-box,
+.entry-content .point-box {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
+    border-left: 5px solid #66bb6a;
+    padding: 20px 24px;
+    margin: 24px 0;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(102, 187, 106, 0.1);
+}
+
+.info-box:before,
+.point-box:before {
+    content: "💡 ";
+    font-size: 1.2em;
+    margin-right: 8px;
+}
+
+/* 注意・警告ボックス */
+.entry-content .warning-box,
+.entry-content .alert-box {
+    background: linear-gradient(135deg, #fff3e0 0%, #fffaf5 100%);
+    border-left: 5px solid #ff9800;
+    padding: 20px 24px;
+    margin: 24px 0;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(255, 152, 0, 0.1);
+}
+
+.warning-box:before,
+.alert-box:before {
+    content: "⚠️ ";
+    font-size: 1.2em;
+    margin-right: 8px;
+}
+
+/* --------------------------------
+   引用・ブロッククォート
+   -------------------------------- */
+
+.entry-content blockquote {
+    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+    border-left: 5px solid #4a7c59;
+    padding: 20px 24px;
+    margin: 24px 0;
+    font-style: italic;
+    color: #546e7a;
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+blockquote p {
+    margin: 0;
+    line-height: 1.8;
+}
+
+/* --------------------------------
+   リスト装飾
+   -------------------------------- */
+
+/* 番号付きリスト */
+.entry-content ol {
+    counter-reset: list-counter;
+    list-style: none;
+    padding-left: 0;
+}
+
+.entry-content ol li {
+    counter-increment: list-counter;
+    position: relative;
+    padding-left: 40px;
+    margin: 12px 0;
+    line-height: 1.8;
+}
+
+.entry-content ol li:before {
+    content: counter(list-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: linear-gradient(135deg, #4a7c59 0%, #388e3c 100%);
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9em;
+    box-shadow: 0 2px 4px rgba(74, 124, 89, 0.2);
+}
+
+/* 箇条書きリスト */
+.entry-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.entry-content ul li {
+    position: relative;
+    padding-left: 32px;
+    margin: 10px 0;
+    line-height: 1.8;
+}
+
+.entry-content ul li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #66bb6a;
+    font-weight: 700;
+    font-size: 1.2em;
+}
+
+/* --------------------------------
+   テーブル装飾
+   -------------------------------- */
+
+.entry-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.entry-content table thead {
+    background: linear-gradient(135deg, #4a7c59 0%, #388e3c 100%);
+    color: #fff;
+}
+
+.entry-content table th {
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #2e7d32;
+}
+
+.entry-content table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.entry-content table tbody tr:hover {
+    background: linear-gradient(90deg, #f1f8f4 0%, transparent 100%);
+}
+
+.entry-content table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* --------------------------------
+   画像・メディア装飾
+   -------------------------------- */
+
+.entry-content img {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.entry-content img:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.wp-caption {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 24px 0;
+}
+
+.wp-caption-text {
+    color: #78909c;
+    font-size: 0.9em;
+    text-align: center;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* --------------------------------
+   ボタン・CTA
+   -------------------------------- */
+
+.entry-content a.button,
+.entry-content .wp-block-button__link,
+.entry-content .cta-button {
+    display: inline-block;
+    background: linear-gradient(135deg, #4a7c59 0%, #388e3c 100%);
+    color: #fff;
+    padding: 14px 32px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(74, 124, 89, 0.3);
+    margin: 16px 8px 16px 0;
+}
+
+.entry-content a.button:hover,
+.entry-content .wp-block-button__link:hover,
+.entry-content .cta-button:hover {
+    background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 124, 89, 0.4);
+}
+
+/* 副次的なボタン */
+.entry-content a.button-secondary {
+    background: linear-gradient(135deg, #ff9800 0%, #fb8c00 100%);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+
+.entry-content a.button-secondary:hover {
+    background: linear-gradient(135deg, #fb8c00 0%, #f57c00 100%);
+    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+}
+
+/* --------------------------------
+   サイドバー装飾(人気ランキング等)
+   -------------------------------- */
+
+.widget {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.widget-title {
+    background: linear-gradient(135deg, #4a7c59 0%, #388e3c 100%);
+    color: #fff;
+    padding: 12px 20px;
+    margin: -24px -24px 20px;
+    border-radius: 8px 8px 0 0;
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+/* 人気ランキングアイテム */
+.popular-posts li {
+    padding: 16px;
+    margin: 12px 0;
+    background: linear-gradient(90deg, #f8f9fa 0%, #fff 100%);
+    border-left: 4px solid #ff9800;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.popular-posts li:hover {
+    background: linear-gradient(90deg, #fff8e1 0%, #fff 100%);
+    border-left-color: #f57c00;
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.1);
+}
+
+/* --------------------------------
+   メタ情報(投稿日・カテゴリー等)
+   -------------------------------- */
+
+.entry-meta {
+    background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-radius: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 0.9em;
+    color: #607d8b;
+}
+
+.entry-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.entry-meta .posted-on:before {
+    content: "📅";
+}
+
+.entry-meta .cat-links:before {
+    content: "🏷️";
+}
+
+.entry-meta .author:before {
+    content: "✍️";
+}
+
+/* --------------------------------
+   ページネーション
+   -------------------------------- */
+
+.pagination,
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 40px 0;
+}
+
+.pagination a,
+.pagination span,
+.nav-links a,
+.nav-links span {
+    display: inline-block;
+    padding: 10px 16px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    color: #4a7c59;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.pagination a:hover,
+.nav-links a:hover {
+    background: linear-gradient(135deg, #4a7c59 0%, #388e3c 100%);
+    color: #fff;
+    border-color: #4a7c59;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(74, 124, 89, 0.2);
+}
+
+.pagination .current,
+.nav-links .current {
+    background: linear-gradient(135deg, #4a7c59 0%, #388e3c 100%);
+    color: #fff;
+    border-color: #4a7c59;
+}
+
+/* --------------------------------
+   レスポンシブ調整
+   -------------------------------- */
+
+@media (max-width: 768px) {
+    .entry-content h2 {
+        padding: 14px 16px;
+        font-size: 1.3em;
+    }
+    
+    .entry-content > p:first-of-type {
+        padding: 16px 20px;
+        font-size: 1em;
+    }
+    
+    .entry-content ol li {
+        padding-left: 36px;
+    }
+    
+    .entry-content ol li:before {
+        width: 24px;
+        height: 24px;
+        font-size: 0.85em;
+    }
+    
+    .entry-meta {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+/* ==========================================================================
+   アニメーション
+   ========================================================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.entry-content > * {
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.entry-content > *:nth-child(1) { animation-delay: 0.1s; }
+.entry-content > *:nth-child(2) { animation-delay: 0.2s; }
+.entry-content > *:nth-child(3) { animation-delay: 0.3s; }
+.entry-content > *:nth-child(4) { animation-delay: 0.4s; }
+.entry-content > *:nth-child(5) { animation-delay: 0.5s; }

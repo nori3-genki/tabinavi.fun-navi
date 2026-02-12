@@ -1,0 +1,68 @@
+/* 関連ホテル */
+.hrs-related-hotels {
+    margin: 40px 0;
+    padding: 25px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+}
+.hrs-related-hotels h3 {
+    margin: 0 0 20px;
+    font-size: 20px;
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+.hrs-related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+.hrs-related-card {
+    display: block;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.hrs-related-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+.hrs-related-image img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+.hrs-related-content {
+    padding: 15px;
+}
+.hrs-related-title {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.hrs-related-price {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #bf0000;
+}
+.hrs-inline-link {
+    color: #007bff;
+    text-decoration: underline;
+}
+@media (max-width: 600px) {
+    .hrs-related-grid {
+        grid-template-columns: 1fr;
+    }
+}

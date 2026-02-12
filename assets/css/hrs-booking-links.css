@@ -1,0 +1,111 @@
+/**
+ * HRS OTAリンクセクション スタイル（統一版）
+ * 
+ * @version 1.1.0
+ */
+.hrs-booking-links {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 32px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+.hrs-booking-links h2 {
+    font-size: 1.4em;
+    margin: 0 0 12px 0;
+    padding: 0;
+    color: #2c3e50;
+    border: none;
+    background: none;
+}
+.hrs-booking-links > p {
+    color: #6c757d;
+    margin: 0 0 20px 0;
+    font-size: 0.95em;
+}
+.hrs-ota-list {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+.hrs-ota-item {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.hrs-ota-item::before {
+    display: none !important;
+}
+.hrs-ota-item a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 20px;
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    text-decoration: none !important;
+    color: #333;
+    font-size: 0.95em;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+.hrs-ota-item a:hover {
+    background: #f8f9fa;
+    border-color: #adb5bd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.hrs-ota-item img[width="1"] {
+    position: absolute;
+    left: -9999px;
+}
+.hrs-related-posts {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 24px 0;
+}
+.hrs-related-posts h3 {
+    font-size: 1.2em;
+    margin: 0 0 16px 0;
+    padding: 0;
+    color: #2c3e50;
+    border: none;
+}
+.hrs-related-posts ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.hrs-related-posts li {
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+.hrs-related-posts li:last-child {
+    border-bottom: none;
+}
+.hrs-related-posts a {
+    color: #3498db;
+    text-decoration: none;
+}
+.hrs-related-posts a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+@media (max-width: 768px) {
+    .hrs-booking-links {
+        padding: 16px;
+        margin: 24px 0;
+    }
+    .hrs-ota-list {
+        grid-template-columns: 1fr;
+    }
+    .hrs-ota-item a {
+        padding: 12px 16px;
+    }
+}

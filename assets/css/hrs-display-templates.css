@@ -1,0 +1,575 @@
+/**
+ * HRS Display Templates CSS
+ * 
+ * ランキング・口コミ・予約リンク（記事末尾）セクションのスタイル
+ * ※ 料金セクション(.hrs-price-section)は hrs-price-section.css(v8.0.0) で管理
+ * 
+ * @package HRS
+ * @version 6.2.0
+ * 
+ * 変更履歴:
+ * - 6.2.0: .hrs-price-section 関連を削除（8.0.0に移管・競合防止）
+ *          予約リンクCSS強化（Cocoon干渉対策 !important + 高詳細度セレクタ）
+ * - 6.1.0: 予約リンク3列2段レイアウト+サイトカラー、アイキャッチ・目次中央寄せ追加
+ * - 6.0.0: 初期リリース
+ */
+
+/* ========================================
+   共通スタイル
+   ※ .hrs-price-section は hrs-price-section.css で管理
+   ======================================== */
+.hrs-ranking-section,
+.hrs-reviews-section,
+.hrs-booking-section {
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    line-height: 1.8;
+    margin: 30px 0;
+}
+
+/* ========================================
+   アイキャッチ画像 中央寄せ
+   ======================================== */
+.eye-catch,
+.wp-post-image,
+.entry-content .eye-catch {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.eye-catch img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ========================================
+   目次（TOC）中央寄せ
+   ======================================== */
+.toc,
+#toc,
+.toc-content,
+.table-of-contents,
+#toc-widget-area .toc,
+.article .toc {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 600px;
+}
+
+/* ========================================
+   ★ 予約リンク 3列2段 + サイトカラー
+   Cocoon テーマ干渉対策: !important + 高詳細度セレクタ
+   ======================================== */
+.hrs-booking-links {
+    margin: 40px 0;
+}
+
+.hrs-booking-links h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* ★ Cocoon の ul/li リセット（高詳細度） */
+.entry-content .hrs-booking-links .hrs-ota-list,
+.article-body .hrs-booking-links .hrs-ota-list,
+.hrs-booking-links .hrs-ota-list {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+    justify-items: center;
+}
+
+.entry-content .hrs-ota-list .hrs-ota-item,
+.article-body .hrs-ota-list .hrs-ota-item,
+.hrs-ota-list .hrs-ota-item {
+    list-style: none !important;
+    list-style-type: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    width: 100%;
+}
+
+/* Cocoon のリストマーカー完全除去 */
+.entry-content .hrs-ota-list .hrs-ota-item::before,
+.entry-content .hrs-ota-list .hrs-ota-item::after,
+.hrs-ota-list .hrs-ota-item::before,
+.hrs-ota-list .hrs-ota-item::after {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* リンクボタン共通 */
+.hrs-ota-item a {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 16px 12px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff !important;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    box-sizing: border-box;
+    min-height: 56px;
+    line-height: 1.3;
+}
+
+.hrs-ota-item a:visited {
+    color: #fff !important;
+}
+
+.hrs-ota-item a:hover {
+    transform: translateY(-3px);
+    opacity: 0.9;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+/* --- 楽天トラベル（赤） --- */
+.hrs-ota-item:nth-child(1) a {
+    background: linear-gradient(135deg, #bf0000 0%, #e60000 100%) !important;
+    box-shadow: 0 4px 12px rgba(191, 0, 0, 0.35);
+}
+.hrs-ota-item:nth-child(1) a:hover {
+    box-shadow: 0 6px 20px rgba(191, 0, 0, 0.5);
+}
+
+/* --- じゃらん（オレンジ） --- */
+.hrs-ota-item:nth-child(2) a {
+    background: linear-gradient(135deg, #e65100 0%, #ff8f00 100%) !important;
+    box-shadow: 0 4px 12px rgba(230, 81, 0, 0.35);
+}
+.hrs-ota-item:nth-child(2) a:hover {
+    box-shadow: 0 6px 20px rgba(230, 81, 0, 0.5);
+}
+
+/* --- 一休.com（黒） --- */
+.hrs-ota-item:nth-child(3) a {
+    background: linear-gradient(135deg, #1a1a1a 0%, #333 100%) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.hrs-ota-item:nth-child(3) a:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* --- JTB（ブルー） --- */
+.hrs-ota-item:nth-child(4) a {
+    background: linear-gradient(135deg, #0047ab 0%, #0066cc 100%) !important;
+    box-shadow: 0 4px 12px rgba(0, 71, 171, 0.35);
+}
+.hrs-ota-item:nth-child(4) a:hover {
+    box-shadow: 0 6px 20px rgba(0, 71, 171, 0.5);
+}
+
+/* --- ゆこゆこ（グリーン） --- */
+.hrs-ota-item:nth-child(5) a {
+    background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%) !important;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.35);
+}
+.hrs-ota-item:nth-child(5) a:hover {
+    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.5);
+}
+
+/* --- 6番目以降（グレー系フォールバック） --- */
+.hrs-ota-item:nth-child(n+6) a {
+    background: linear-gradient(135deg, #546e7a 0%, #78909c 100%) !important;
+    box-shadow: 0 4px 12px rgba(84, 110, 122, 0.35);
+}
+
+/* ========================================
+   予約リンク レスポンシブ
+   ======================================== */
+@media (max-width: 768px) {
+    .entry-content .hrs-booking-links .hrs-ota-list,
+    .hrs-booking-links .hrs-ota-list {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .hrs-ota-item a {
+        padding: 14px 10px;
+        font-size: 13px;
+        min-height: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .entry-content .hrs-booking-links .hrs-ota-list,
+    .hrs-booking-links .hrs-ota-list {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .hrs-ota-item a {
+        padding: 16px;
+        font-size: 15px;
+    }
+}
+
+/* ========================================
+   ランキングセクション
+   ======================================== */
+.hrs-ranking-section {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px solid #4caf50;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+}
+
+.hrs-ranking-section h3 {
+    color: #2e7d32;
+    font-size: 18px;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hrs-ranking-section h3::before {
+    content: "🏆";
+    font-size: 24px;
+}
+
+.hrs-ranking-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.hrs-ranking-item {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+}
+
+.hrs-ranking-item:hover {
+    transform: translateX(5px);
+}
+
+.hrs-ranking-item.current {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border: 2px solid #ff9800;
+}
+
+.hrs-rank-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.hrs-rank-1 { background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%); color: #5d4e00; }
+.hrs-rank-2 { background: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%); color: #404040; }
+.hrs-rank-3 { background: linear-gradient(135deg, #cd7f32 0%, #a0522d 100%); color: white; }
+.hrs-rank-4, .hrs-rank-5 { background: #e0e0e0; color: #666; }
+
+.hrs-ranking-info {
+    flex-grow: 1;
+}
+
+.hrs-ranking-info .hotel-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.hrs-ranking-info .hotel-area {
+    font-size: 12px;
+    color: #888;
+}
+
+.hrs-ranking-score {
+    text-align: right;
+}
+
+.hrs-ranking-score .score {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff9800;
+}
+
+.hrs-ranking-score .label {
+    font-size: 11px;
+    color: #888;
+}
+
+/* ========================================
+   口コミセクション
+   ======================================== */
+.hrs-reviews-section {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px solid #2196f3;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+}
+
+.hrs-reviews-section h3 {
+    color: #1565c0;
+    font-size: 18px;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hrs-reviews-section h3::before {
+    content: "⭐";
+    font-size: 24px;
+}
+
+.hrs-review-summary {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.hrs-review-score-big {
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.hrs-review-score-big .score {
+    font-size: 48px;
+    font-weight: bold;
+    color: #ff9800;
+    line-height: 1;
+}
+
+.hrs-review-score-big .stars {
+    color: #ff9800;
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+.hrs-review-score-big .count {
+    font-size: 12px;
+    color: #888;
+}
+
+.hrs-review-breakdown {
+    flex-grow: 1;
+}
+
+.hrs-review-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.hrs-review-bar .label {
+    width: 80px;
+    font-size: 12px;
+    color: #666;
+}
+
+.hrs-review-bar .bar-bg {
+    flex-grow: 1;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.hrs-review-bar .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff9800 0%, #ffc107 100%);
+    border-radius: 4px;
+}
+
+.hrs-review-bar .value {
+    width: 30px;
+    text-align: right;
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+}
+
+.hrs-review-list h4 {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 15px 0;
+}
+
+.hrs-review-item {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.hrs-review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.hrs-review-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hrs-review-user .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.hrs-review-user .name {
+    font-weight: 600;
+    color: #333;
+}
+
+.hrs-review-user .date {
+    font-size: 11px;
+    color: #888;
+}
+
+.hrs-review-rating {
+    color: #ff9800;
+    font-size: 14px;
+}
+
+.hrs-review-text {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.hrs-review-tags {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.hrs-review-tag {
+    background: #e3f2fd;
+    color: #1565c0;
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 11px;
+}
+
+/* ========================================
+   予約ボタンセクション（テンプレート版）
+   ======================================== */
+.hrs-booking-section {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    color: white;
+}
+
+.hrs-booking-section h3 {
+    font-size: 20px;
+    margin: 0 0 10px 0;
+    color: white;
+}
+
+.hrs-booking-section p {
+    opacity: 0.8;
+    margin: 0 0 20px 0;
+}
+
+.hrs-booking-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.hrs-booking-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.hrs-booking-btn:hover {
+    transform: translateY(-3px);
+}
+
+.hrs-booking-btn.rakuten {
+    background: linear-gradient(135deg, #bf0000 0%, #e60000 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(230, 0, 0, 0.3);
+}
+
+.hrs-booking-btn.jalan {
+    background: linear-gradient(135deg, #ff6b00 0%, #ff8c00 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+}
+
+.hrs-booking-btn.ikyu {
+    background: linear-gradient(135deg, #000 0%, #333 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================
+   レスポンシブ対応（既存セクション）
+   ======================================== */
+@media (max-width: 600px) {
+    .hrs-review-summary {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .hrs-review-bar .label {
+        width: 60px;
+    }
+    
+    .hrs-booking-buttons {
+        flex-direction: column;
+    }
+    
+    .hrs-booking-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

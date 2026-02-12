@@ -1,0 +1,298 @@
+/**
+ * HRS ランキング・評価セクション スタイル
+ * 
+ * @package Hotel_Review_System
+ * @since 8.0.0
+ */
+
+/* ========================================
+   ランキングセクション コンテナ
+   ======================================== */
+.hrs-ranking-section {
+    background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+    border-radius: 16px;
+    padding: 24px;
+    margin: 32px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.hrs-ranking-section h3 {
+    font-size: 1.4em;
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0e68c;
+    color: #333;
+}
+
+/* ========================================
+   ランキングカード
+   ======================================== */
+.hrs-ranking-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.hrs-ranking-has-data {
+    border: 2px solid #ffd700;
+}
+
+.hrs-ranking-no-data {
+    border: 2px solid #e0e0e0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+}
+
+/* ========================================
+   ランキングバッジ
+   ======================================== */
+.hrs-ranking-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffb800 100%);
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.hrs-rank-icon {
+    font-size: 1.5em;
+}
+
+.hrs-rank-position {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #333;
+}
+
+.hrs-rank-label {
+    font-size: 0.9em;
+    color: #555;
+}
+
+/* ========================================
+   評価スコア
+   ======================================== */
+.hrs-review-score {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.hrs-score-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.hrs-star {
+    font-size: 1.4em;
+    line-height: 1;
+}
+
+.hrs-star-full {
+    color: #ffd700;
+}
+
+.hrs-star-half {
+    color: #ffd700;
+    opacity: 0.6;
+}
+
+.hrs-star-empty {
+    color: #ddd;
+}
+
+.hrs-score-number {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.hrs-score-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: #333;
+}
+
+.hrs-score-max {
+    font-size: 1em;
+    color: #888;
+}
+
+.hrs-review-count {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* ========================================
+   ホテル特徴
+   ======================================== */
+.hrs-hotel-special {
+    background: #fffef0;
+    border-left: 4px solid #ffd700;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 0 8px 8px 0;
+}
+
+.hrs-hotel-special p {
+    margin: 0;
+    color: #555;
+    line-height: 1.7;
+}
+
+/* ========================================
+   ランキングサマリー
+   ======================================== */
+.hrs-ranking-summary {
+    margin-bottom: 15px;
+}
+
+.hrs-ranking-summary p {
+    margin: 0;
+    color: #333;
+    line-height: 1.8;
+    font-size: 1em;
+}
+
+.hrs-ranking-source {
+    font-size: 0.8em;
+    color: #999;
+    margin: 0;
+    text-align: right;
+}
+
+/* ========================================
+   楽天データなし時
+   ======================================== */
+.hrs-ranking-alternative {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.hrs-alt-icon {
+    font-size: 1.5em;
+}
+
+.hrs-ranking-alternative h4 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.hrs-ranking-no-data-content {
+    margin-bottom: 15px;
+}
+
+.hrs-ranking-no-data-content p {
+    margin: 0;
+    color: #555;
+    line-height: 1.8;
+}
+
+.hrs-ranking-note {
+    font-size: 0.85em;
+    color: #888;
+    margin: 0;
+    padding-top: 10px;
+    border-top: 1px dashed #ddd;
+}
+
+/* ========================================
+   レスポンシブ
+   ======================================== */
+@media (max-width: 768px) {
+    .hrs-ranking-section {
+        padding: 16px;
+        margin: 24px 0;
+    }
+
+    .hrs-ranking-section h3 {
+        font-size: 1.2em;
+    }
+
+    .hrs-ranking-card {
+        padding: 16px;
+    }
+
+    .hrs-ranking-badge {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .hrs-rank-position {
+        font-size: 1.5em;
+    }
+
+    .hrs-review-score {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .hrs-score-value {
+        font-size: 1.6em;
+    }
+}
+
+/* ========================================
+   ダークモード対応
+   ======================================== */
+@media (prefers-color-scheme: dark) {
+    .hrs-ranking-section {
+        background: linear-gradient(135deg, #2d2a1a 0%, #3d3820 100%);
+    }
+
+    .hrs-ranking-section h3 {
+        color: #e0e0e0;
+        border-bottom-color: #5d5830;
+    }
+
+    .hrs-ranking-card {
+        background: #2d2d2d;
+    }
+
+    .hrs-ranking-has-data {
+        border-color: #b8960f;
+    }
+
+    .hrs-ranking-badge {
+        background: linear-gradient(135deg, #b8960f 0%, #8a6f0b 100%);
+    }
+
+    .hrs-rank-position,
+    .hrs-rank-label {
+        color: #fff;
+    }
+
+    .hrs-review-score {
+        background: #3d3d3d;
+    }
+
+    .hrs-score-value {
+        color: #e0e0e0;
+    }
+
+    .hrs-hotel-special {
+        background: #3d3820;
+        border-left-color: #b8960f;
+    }
+
+    .hrs-hotel-special p,
+    .hrs-ranking-summary p,
+    .hrs-ranking-no-data-content p {
+        color: #ccc;
+    }
+
+    .hrs-ranking-alternative h4 {
+        color: #e0e0e0;
+    }
+}

@@ -1,0 +1,402 @@
+/**
+ * HRS 料金セクション スタイル
+ * 
+ * @package Hotel_Review_System
+ * @version 8.3.3
+ * 
+ * 変更履歴:
+ * - 8.3.3: JTBボタン追加（じゃらん・一休・JTBの3列表示）
+ * - 8.2.0: 予約ボタンを最安値の下に横3列表示に変更
+ * - 8.1.0: 予約ボタンを最安値の下に1列表示に変更
+ * - 8.0.0: 初期リリース
+ */
+
+/* ========================================
+   料金セクション コンテナ
+   ======================================== */
+.hrs-price-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 16px;
+    padding: 24px;
+    margin: 32px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.hrs-price-section h3 {
+    font-size: 1.4em;
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #dee2e6;
+    color: #333;
+}
+
+/* ========================================
+   楽天料金カード
+   ======================================== */
+.hrs-price-rakuten {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 2px solid #bf0000;
+    box-shadow: 0 2px 10px rgba(191, 0, 0, 0.1);
+}
+
+.hrs-price-rakuten.hrs-price-no-data {
+    border-color: #dee2e6;
+}
+
+.hrs-price-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.hrs-ota-logo {
+    width: 100px;
+    height: auto;
+}
+
+.hrs-ota-name {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #bf0000;
+}
+
+.hrs-price-body {
+    margin-bottom: 16px;
+}
+
+.hrs-price-amount {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.hrs-price-label {
+    font-size: 0.85em;
+    color: #666;
+    background: #f8f9fa;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.hrs-price-value {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #bf0000;
+}
+
+.hrs-price-unit {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.hrs-price-plan {
+    font-size: 0.9em;
+    color: #555;
+    margin: 8px 0 0 0;
+    line-height: 1.5;
+}
+
+.hrs-price-updated {
+    font-size: 0.8em;
+    color: #999;
+    margin: 8px 0 0 0;
+}
+
+.hrs-price-action {
+    margin-top: 16px;
+}
+
+/* ========================================
+   ★【v8.3.3】予約ボタン - 横表示
+   楽天: 1行目右寄せ
+   じゃらん・一休・JTB: 2行目に3列横並び
+   ======================================== */
+
+/* ボタンコンテナ */
+.hrs-price-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+/* ボタン共通スタイル */
+.hrs-price-button {
+    display: inline-block;
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ボタンを横に並べる */
+.hrs-price-button:last-child {
+    margin-right: 0;
+}
+
+/* 楽天 */
+.hrs-price-button-rakuten {
+    background: linear-gradient(135deg, #bf0000 0%, #8b0000 100%);
+    color: #fff !important;
+    box-shadow: 0 4px 15px rgba(191, 0, 0, 0.3);
+}
+
+.hrs-price-button-rakuten:hover {
+    background: linear-gradient(135deg, #d10000 0%, #a00000 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(191, 0, 0, 0.4);
+    color: #fff !important;
+    text-decoration: none;
+}
+
+/* じゃらん */
+.hrs-price-button-jalan {
+    background: linear-gradient(135deg, #e65100 0%, #ff8f00 100%);
+    color: #fff !important;
+    box-shadow: 0 4px 15px rgba(230, 81, 0, 0.3);
+}
+
+.hrs-price-button-jalan:hover {
+    background: linear-gradient(135deg, #ff6d00 0%, #ffa000 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(230, 81, 0, 0.4);
+    color: #fff !important;
+    text-decoration: none;
+}
+
+/* 一休 */
+.hrs-price-button-ikyu {
+    background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+    color: #fff !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.hrs-price-button-ikyu:hover {
+    background: linear-gradient(135deg, #333 0%, #555 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    color: #fff !important;
+    text-decoration: none;
+}
+
+/* ★ JTB */
+.hrs-price-button-jtb {
+    background: linear-gradient(135deg, #e60012 0%, #b8000e 100%);
+    color: #fff !important;
+    box-shadow: 0 4px 15px rgba(230, 0, 18, 0.3);
+}
+
+.hrs-price-button-jtb:hover {
+    background: linear-gradient(135deg, #ff1a2e 0%, #e60012 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(230, 0, 18, 0.4);
+    color: #fff !important;
+    text-decoration: none;
+}
+
+/* ========================================
+   他OTAリンク - 1列表示
+   ======================================== */
+.hrs-price-other-ota {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.hrs-price-other-title {
+    font-size: 0.95em;
+    font-weight: 600;
+    color: #555;
+    margin: 0 0 16px 0;
+}
+
+/* ★【v8.1.0】縦1列に変更 */
+.hrs-price-other-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hrs-price-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.hrs-ota-icon {
+    font-size: 1.1em;
+}
+
+/* じゃらん */
+.hrs-price-link-jalan {
+    background: #fff;
+    border-color: #ff6600;
+    color: #ff6600 !important;
+}
+
+.hrs-price-link-jalan:hover {
+    background: #ff6600;
+    color: #fff !important;
+    text-decoration: none;
+}
+
+/* 一休 */
+.hrs-price-link-ikyu {
+    background: #fff;
+    border-color: #c4a000;
+    color: #c4a000 !important;
+}
+
+.hrs-price-link-ikyu:hover {
+    background: #c4a000;
+    color: #fff !important;
+    text-decoration: none;
+}
+
+/* Yahoo!トラベル */
+.hrs-price-link-yahoo {
+    background: #fff;
+    border-color: #ff0033;
+    color: #ff0033 !important;
+}
+
+.hrs-price-link-yahoo:hover {
+    background: #ff0033;
+    color: #fff !important;
+    text-decoration: none;
+}
+
+/* るるぶ */
+.hrs-price-link-rurubu {
+    background: #fff;
+    border-color: #e60012;
+    color: #e60012 !important;
+}
+
+.hrs-price-link-rurubu:hover {
+    background: #e60012;
+    color: #fff !important;
+    text-decoration: none;
+}
+
+/* ========================================
+   パターン2: 楽天なし（他OTAのみ）
+   ======================================== */
+.hrs-price-other-only {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+}
+
+.hrs-price-check-message {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 20px 0;
+}
+
+/* ========================================
+   レスポンシブ
+   ======================================== */
+@media (max-width: 768px) {
+    .hrs-price-section {
+        padding: 16px;
+        margin: 24px 0;
+    }
+
+    .hrs-price-section h3 {
+        font-size: 1.2em;
+    }
+
+    .hrs-price-rakuten {
+        padding: 16px;
+    }
+
+    .hrs-price-value {
+        font-size: 1.5em;
+    }
+
+    .hrs-price-button {
+        padding: 12px 14px;
+    }
+}
+
+/* ========================================
+   スマートフォン対応（縦並びに戻す）
+   ======================================== */
+@media (max-width: 480px) {
+    .hrs-price-buttons-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .hrs-price-button {
+        display: block;
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 1em;
+    }
+}
+
+/* ========================================
+   ダークモード対応
+   ======================================== */
+@media (prefers-color-scheme: dark) {
+    .hrs-price-section {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    }
+
+    .hrs-price-section h3 {
+        color: #e0e0e0;
+        border-bottom-color: #444;
+    }
+
+    .hrs-price-rakuten,
+    .hrs-price-other-ota {
+        background: #2d2d2d;
+    }
+
+    .hrs-price-label {
+        background: #3d3d3d;
+        color: #bbb;
+    }
+
+    .hrs-price-plan,
+    .hrs-price-other-title {
+        color: #ccc;
+    }
+
+    .hrs-price-updated,
+    .hrs-price-note {
+        color: #888;
+    }
+
+    .hrs-price-link {
+        background: #2d2d2d;
+    }
+}
